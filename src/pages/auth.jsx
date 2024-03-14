@@ -8,31 +8,30 @@ import { getCurrentUser } from "aws-amplify/auth";
 
 Amplify.configure({ ...config, ssr: true });
 
-function AuthAccount({ signOut, user }) {
+function AuthAccount() {
   const router = useRouter();
-  useEffect(() => {
-    const checkCurrentUser = async () => {
-      try {
-        const { username, userId, signInDetails } = await getCurrentUser();
+  const adminEmail = process.env.ADMIN_EMAIL;
+  const ADMIN_ROUTE = "/admin";
+  const APPLICANT_ROUTE = "/applicant";
 
-        setUser({
-          isLoggedIn: true,
-          userId: userId,
-          email: signInDetails?.loginId || null, // Assuming loginId is the email
-        });
-      } catch (error) {
-        console.log('Error getting current authenticated user:', error);
-        if (user.isLoggedIn) {
-          setUser({
-            isLoggedIn: false,
-            userId: null,
-            email: null,
-          });
+  useEffect(() => {
+    async function handleAuthentication() {
+      try {
+        const currentUser = await getCurrentUser();
+        if (currentUser.attributes.role === "admin") {
+          router.push(ADMIN_ROUTE);
+        } else {
+          router.push(APPLICANT_ROUTE);
         }
+      } catch (error) {
+        console.error("Authentication error:", error);
       }
-    };
-    checkCurrentUser();
-  }, [user]);
+    }
+
+    handleAuthentication();
+  }, []);
+
+  return null;
 }
 
 export default withAuthenticator(AuthAccount);
