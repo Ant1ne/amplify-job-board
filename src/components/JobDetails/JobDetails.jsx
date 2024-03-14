@@ -1,10 +1,9 @@
-"use client";
 import Image from "next/image";
 import React, { useEffect } from "react";
 import { useRouter } from "next/router";
 import getData from "@/pages/api/getData";
 
-function Jobdetails({ data }) {
+function JobDetails({ data }) {
   const router = useRouter();
 
   useEffect(() => {
@@ -15,7 +14,7 @@ function Jobdetails({ data }) {
     <div className="App">
       <section className="hero-section">
         <div className="hero-content">
-          <h1>Welcome to ConnectCareers</h1>
+          <h1>Welcome to Amplify Careers</h1>
           <p>Where you discover exciting job opportunities.</p>
           <button className="btn-primary">Get Started</button>
         </div>
@@ -39,7 +38,7 @@ function Jobdetails({ data }) {
                 <div key={i}>
                   <div className="item-card">
                     <Image
-                      src="<https://picsum.photos/id/20/500/300>"
+                      src="https://picsum.photos/id/20/500/300"
                       width={500}
                       height={200}
                       alt="item"
@@ -77,4 +76,4 @@ function Jobdetails({ data }) {
   );
 }
 
-export default Jobdetails;
+export default JobDetails;

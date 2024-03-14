@@ -1,8 +1,8 @@
 import { DataStore } from "@aws-amplify/datastore";
-import { JobList } from "../../../backend/backend/models";
+import { JobList } from "../../models";
 
 async function getData() {
-  const res = await DataStore.query(JobList);
+  const res = await DataStore?.query(JobList);
   return res;
 }
 

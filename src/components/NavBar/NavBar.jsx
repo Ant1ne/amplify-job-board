@@ -1,28 +1,23 @@
-"use client";
-
 import React, { useEffect, useState } from "react";
-import { Amplify } from "aws-amplify";
 import { useRouter } from "next/router";
 import "@aws-amplify/ui-react/styles.css";
-import awsconfig from "../../../Backend/Backend/aws-exports";
-import { Auth } from "aws-amplify";
+import { Auth } from "aws-amplify/auth";
+import { getCurrentUser } from "aws-amplify/auth";
 
-Amplify.configure({ ...awsconfig, ssr: true });
-
-const Navbar = () => {
-  const [authenticated, setauthenticated] = useState(false);
+const NavBar = () => {
+  const [authenticated, setAuthenticated] = useState(false);
   const { asPath } = useRouter();
   const router = useRouter();
 
-  useEffect(() => {
-    Auth.currentAuthenticatedUser({
-      bypassCache: false,
-    })
-      .then((result) => {
-        setauthenticated(result);
-      })
-      .catch((err) => console.log(err));
-  }, [asPath]);
+  // useEffect(() => {
+  //   Auth.getCurrentUser({
+  //     bypassCache: false,
+  //   })
+  //     .then((result) => {
+  //       setAuthenticated(result);
+  //     })
+  //     .catch((err) => console.log(err));
+  // }, [asPath]);
 
   return (
     <div>
@@ -48,7 +43,7 @@ const Navbar = () => {
                 router.push("/");
               }}
             >
-              ConnectCareers
+              Amplify Careers
             </h1>
             <div style={{ display: "flex", alignItems: "center" }}>
               <button
@@ -73,4 +68,4 @@ const Navbar = () => {
   );
 };
 
-export default Navbar;
+export default NavBar;
