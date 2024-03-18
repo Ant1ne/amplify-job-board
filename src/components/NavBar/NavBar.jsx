@@ -1,23 +1,22 @@
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import "@aws-amplify/ui-react/styles.css";
-import { Auth } from "aws-amplify/auth";
-import { getCurrentUser } from "aws-amplify/auth";
+import { Auth } from "aws-amplify";
 
 const NavBar = () => {
   const [authenticated, setAuthenticated] = useState(false);
   const { asPath } = useRouter();
   const router = useRouter();
 
-  // useEffect(() => {
-  //   Auth.getCurrentUser({
-  //     bypassCache: false,
-  //   })
-  //     .then((result) => {
-  //       setAuthenticated(result);
-  //     })
-  //     .catch((err) => console.log(err));
-  // }, [asPath]);
+  useEffect(() => {
+    Auth.currentAuthenticatedUser({
+      bypassCache: false,
+    })
+      .then((result) => {
+        setAuthenticated(result);
+      })
+      .catch((err) => console.log(err));
+  }, [asPath]);
 
   return (
     <div>

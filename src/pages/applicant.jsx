@@ -14,9 +14,13 @@ import { DataStore } from "@aws-amplify/datastore";
 
 Amplify.configure({ ...awsconfig, ssr: true });
 
+const ADMIN_ROUTE = "/admin";
+const APPLICANT_ROUTE = "/applicant";
+
 function Applicant({ signOut, user }) {
-  const [jobdetails, setJobDetails] = useState();
+  const [jobDetails, setJobDetails] = useState();
   const router = useRouter();
+  const adminEmail = process.env.ADMIN_EMAIL;
   const [state, setState] = useState({
     name: "",
     email: "",
@@ -34,7 +38,7 @@ function Applicant({ signOut, user }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const res = await apply(state, jobdetails);
+    const res = await apply(state, jobDetails);
     if (res.success) {
       Swal.fire({
         title: "Application successfully",
@@ -83,13 +87,13 @@ function Applicant({ signOut, user }) {
       bypassCache: false,
     })
       .then((user) => {
-        if (user.attributes.email === "femiakinyemi65@gmail.com") {
-          router.push("/admin");
+        if (user.attributes.email === adminEmail) {
+          router.push(ADMIN_ROUTE);
         } else if (
-          user.attributes.email !== "femiakinyemi65@gmail.com" &&
+          user.attributes.email !== adminEmail &&
           user.attributes.email
         ) {
-          router.push("/applicant");
+          router.push(APPLICANT_ROUTE);
         } else {
           router.push("/");
         }
@@ -116,7 +120,7 @@ function Applicant({ signOut, user }) {
             }}
             onClick={() => HandleLogout()}
           >
-            Signout
+            Sign out
           </button>
 
           <div className="row">
@@ -142,22 +146,22 @@ function Applicant({ signOut, user }) {
                   onChange={handleInputChange}
                 />
 
-                <label htmlFor="portfoliourl">Portfolio Url:</label>
+                <label htmlFor="portfolioUrl">Portfolio Url:</label>
                 <input
                   type="text"
                   required
-                  id="portfoliourl"
-                  name="portfoliourl"
-                  value={state.portfoliourl}
+                  id="portfolioUrl"
+                  name="portfolioUrl"
+                  value={state.portfolioUrl}
                   onChange={handleInputChange}
                 />
 
-                <label htmlFor="coverletter">Cover letter:</label>
+                <label htmlFor="coverLetter">Cover letter:</label>
                 <textarea
-                  id="coverletter"
+                  id="coverLetter"
                   required
-                  name="coverletter"
-                  value={state.coverletter}
+                  name="coverLetter"
+                  value={state.coverLetter}
                   onChange={handleInputChange}
                 ></textarea>
                 <input type="submit" value="Submit" />
@@ -167,12 +171,12 @@ function Applicant({ signOut, user }) {
               <div>
                 <h2>Job Details</h2>
                 <ul>
-                  <li>Job Position: {jobdetails?.JobPosition}</li>
-                  <li>Job Details: {jobdetails?.Description}</li>
-                  <li>Location: {jobdetails?.Location}</li>
-                  <li>Experience: {jobdetails?.Experience}</li>
-                  <li>Job Status: {jobdetails?.JobStatus}</li>
-                  <li>Description: {jobdetails?.Description}</li>
+                  <li>Job Position: {jobDetails?.JobPosition}</li>
+                  <li>Job Details: {jobDetails?.Description}</li>
+                  <li>Location: {jobDetails?.Location}</li>
+                  <li>Experience: {jobDetails?.Experience}</li>
+                  <li>Job Status: {jobDetails?.JobStatus}</li>
+                  <li>Description: {jobDetails?.Description}</li>
                 </ul>
               </div>
             </div>

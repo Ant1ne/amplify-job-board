@@ -1,34 +1,36 @@
+import "@aws-amplify/ui-react/styles.css";
 import { useEffect } from "react";
 import { Amplify } from "aws-amplify";
 import { withAuthenticator } from "@aws-amplify/ui-react";
 import "@aws-amplify/ui-react/styles.css";
-import config from "../../src/amplifyconfiguration.json";
+import awsconfig from "../aws-exports";
 import { useRouter } from "next/navigation";
-import { getCurrentUser } from "aws-amplify/auth";
+import { Auth } from "aws-amplify";
+import { result } from "lodash";
 
-Amplify.configure({ ...config, ssr: true });
+const ADMIN_ROUTE = "/admin";
+const APPLICANT_ROUTE = "/applicant";
 
-function AuthAccount() {
+Amplify.configure({ ...awsconfig, ssr: true });
+
+function AuthAccount({ user }) {
   const router = useRouter();
   const adminEmail = process.env.ADMIN_EMAIL;
-  const ADMIN_ROUTE = "/admin";
-  const APPLICANT_ROUTE = "/applicant";
 
   useEffect(() => {
-    async function handleAuthentication() {
-      try {
-        const currentUser = await getCurrentUser();
-        if (currentUser.attributes.role === "admin") {
+    Auth.currentAuthenticatedUser({
+      bypassCache: false,
+    })
+      .then((result) => {
+        if (user.attributes.email === adminEmail) {
           router.push(ADMIN_ROUTE);
         } else {
           router.push(APPLICANT_ROUTE);
         }
-      } catch (error) {
-        console.error("Authentication error:", error);
-      }
-    }
-
-    handleAuthentication();
+      })
+      .catch((error) => {
+        handleError(error);
+      });
   }, []);
 
   return null;

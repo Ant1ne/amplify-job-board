@@ -2,43 +2,67 @@ import React, { useEffect, useState } from "react";
 import { Amplify } from "aws-amplify";
 import { withAuthenticator } from "@aws-amplify/ui-react";
 import "@aws-amplify/ui-react/styles.css";
-import awsconfig from "../aws-exports";
 import { useRouter } from "next/navigation";
 import { Auth } from "aws-amplify";
 import styles from "../styles/Home.module.css";
 import { DataStore } from "@aws-amplify/datastore";
 import Image from "next/image";
 import Swal from "sweetalert2";
-import Navbar from "@/components/Navbar/Navbar";
+import Navbar from "@/components/NavBar/NavBar";
 import addNewJob from "./api/addNewJob";
 import { JobList } from "@/models";
 
-Amplify.configure({ ...awsconfig, ssr: true });
+Amplify.configure({ ...process.env.awsconfig, ssr: true });
+const APPLICANT_ROUTE = "/applicant";
 
 async function getData() {
-  const res = await DataStore?.query(ApplicantList);
-  return res;
+  try {
+    const res = await DataStore?.query(ApplicantList);
+    return res;
+  } catch (error) {
+    console.error("Error retrieving data:", error);
+    throw error;
+  }
 }
 
 function Admin({ signOut, user }) {
   const [data, setData] = useState([]);
   const router = useRouter();
-  const [state, setState] = useState({
-    jobPosition: "",
-    Category: "",
-    Location: "",
-    Experience: " ",
-    JobStatus: " ",
-    Agency: " ",
-    Description: " ",
-  });
+  const adminEmail = process.env.ADMIN_EMAIL;
+  const [jobPosition, setJobPosition] = useState("");
+  const [category, setCategory] = useState("");
+  const [location, setLocation] = useState("");
+  const [experience, setExperience] = useState("");
+  const [jobStatus, setJobStatus] = useState("");
+  const [agency, setAgency] = useState("");
+  const [description, setDescription] = useState("");
 
-  const handleInputChange = (event) => {
-    const { name, value } = event.target;
-    setState((prevProps) => ({
-      ...prevProps,
-      [name]: value,
-    }));
+  const handleJobPositionChange = (event) => {
+    setJobPosition(event.target.value);
+  };
+
+  const handleCategoryChange = (event) => {
+    setCategory(event.target.value);
+  };
+
+  const handleLocationChange = (event) => {
+    setLocation(event.target.value);
+  };
+
+  const handleExperienceChange = (event) => {
+    setExperience(event.target.value);
+  };
+
+  const handleJobStatusChange = (event) => {
+    setJobStatus(event.target.value);
+  };
+
+  const handleAgencyChange = (event) => {
+    setAgency(event.target.value);
+  };
+
+  const handleDescriptionChange = (event) => {
+    setDescription(event.target.value);
   };
 
   const HandleLogout = () => {
@@ -48,57 +72,45 @@ function Admin({ signOut, user }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const res = await addnewjob(state);
-    Swal.fire({
-      title: "Application successfully",
-      showConfirmButton: true,
-      confirmButtonText: "Ok",
-    })
-      .then((result) => {
-        if (result.isConfirmed) {
-          router.push("/");
-        }
-      })
-      .catch((error) => {
-        console.error("Error saving item:", error);
+    try {
+      const res = await addNewJob({
+        jobPosition,
+        Category: category,
+        Location: location,
+        Experience: experience,
+        JobStatus: jobStatus,
+        Agency: agency,
+        Description: description,
       });
-    // await DataStore.save(
-    //     new JobList({
-    //         JobPosition: `${data.jobPosition}`,
-    //         Category: `${data.Category}`,
-    //         Location: `${data.Location}`,
-    //         Experience: `${data.Experience}`,
-    //         JobStatus: `${data.JobStatus}`,
-    //         Agency: `${data.Agency}`,
-    //         Description: `${data.Description}`,
-    //     })
-    // ).then(savedItem => {
-    //     // console.log('Item saved successfully:', savedItem);
-    //     Swal.fire({
-    //         title: "Application successfully",
-    //         showConfirmButton: true,
-    //         confirmButtonText: "Ok",
-    //     }).then((result) => {
-    //         if (result.isConfirmed) {
-    //             router.push("/");
-    //         }
-    //     });
-    // }).catch(error => {
-    //     console.error('Error saving item:', error);
-    // })
-
-    if (res.success) {
       Swal.fire({
-        title: "Job added successfully",
+        title: "Application successfully",
         showConfirmButton: true,
         confirmButtonText: "Ok",
-      }).then((result) => {
-        if (result.isConfirmed) {
-          router.push("/");
-        }
-      });
-    } else {
-      console.log(res.error);
+      })
+        .then((result) => {
+          if (result.isConfirmed) {
+            router.push("/");
+          }
+        })
+        .catch((error) => {
+          console.error("Error saving item:", error);
+        });
+
+      if (res.success) {
+        Swal.fire({
+          title: "Job added successfully",
+          showConfirmButton: true,
+          confirmButtonText: "Ok",
+        }).then((result) => {
+          if (result.isConfirmed) {
+            router.push("/");
+          }
+        });
+      } else {
+        console.log(res.error);
+      }
+    } catch (error) {
+      console.error("Error:", error);
     }
   };
 
@@ -107,9 +119,8 @@ function Admin({ signOut, user }) {
       bypassCache: false,
     })
       .then((user) => {
-        // console.log(user.attributes, 'attributess')
-        if (user.attributes.email !== "femiakinyemi65@gmail.com") {
-          router.push("/applicant");
+        if (user.attributes.email !== adminEmail) {
+          router.push(APPLICANT_ROUTE);
         }
       })
       .catch((err) => console.log(err));
@@ -134,7 +145,7 @@ function Admin({ signOut, user }) {
             }}
             onClick={() => HandleLogout()}
           >
-            Signout
+            Sign out
           </button>
 
           <div
@@ -147,14 +158,14 @@ function Admin({ signOut, user }) {
               <h1>Add JOB</h1>
 
               <form onSubmit={handleSubmit}>
-                <label htmlFor="jobPosition">jobPosition:</label>
+                <label htmlFor="jobPosition">Job position:</label>
                 <input
                   type="text"
                   required
                   id="jobPosition"
                   name="jobPosition"
-                  value={state.jobPosition}
-                  onChange={handleInputChange}
+                  value={jobPosition}
+                  onChange={handleJobPositionChange}
                 />
 
                 <label htmlFor="Category">Category:</label>
@@ -163,8 +174,8 @@ function Admin({ signOut, user }) {
                   required
                   id="Category"
                   name="Category"
-                  value={state.Category}
-                  onChange={handleInputChange}
+                  value={category}
+                  onChange={handleCategoryChange}
                 />
 
                 <label htmlFor="Location">Location:</label>
@@ -173,8 +184,8 @@ function Admin({ signOut, user }) {
                   required
                   id="Location"
                   name="Location"
-                  value={state.Location}
-                  onChange={handleInputChange}
+                  value={location}
+                  onChange={handleLocationChange}
                 />
 
                 <label htmlFor="Experience">Experience:</label>
@@ -183,8 +194,8 @@ function Admin({ signOut, user }) {
                   id="Experience"
                   required
                   name="Experience"
-                  value={state.Experience}
-                  onChange={handleInputChange}
+                  value={experience}
+                  onChange={handleExperienceChange}
                 />
 
                 <label htmlFor="JobStatus">Job Status:</label>
@@ -193,8 +204,8 @@ function Admin({ signOut, user }) {
                   id="JobStatus"
                   required
                   name="JobStatus"
-                  value={state.JobStatus}
-                  onChange={handleInputChange}
+                  value={jobStatus}
+                  onChange={handleJobStatusChange}
                 />
 
                 <label htmlFor="Agency">Agency:</label>
@@ -203,8 +214,8 @@ function Admin({ signOut, user }) {
                   id="Agency"
                   required
                   name="Agency"
-                  value={state.Agency}
-                  onChange={handleInputChange}
+                  value={agency}
+                  onChange={handleAgencyChange}
                 />
 
                 <label htmlFor="Description">Description:</label>
@@ -213,8 +224,8 @@ function Admin({ signOut, user }) {
                   id="Description"
                   required
                   name="Description"
-                  value={state.Description}
-                  onChange={handleInputChange}
+                  value={description}
+                  onChange={handleDescriptionChange}
                 />
 
                 <input type="submit" value="Submit" />

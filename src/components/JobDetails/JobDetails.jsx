@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 import React, { useEffect } from "react";
 import { useRouter } from "next/router";
 import getData from "@/pages/api/getData";
@@ -16,7 +17,11 @@ function JobDetails({ data }) {
         <div className="hero-content">
           <h1>Welcome to Amplify Careers</h1>
           <p>Where you discover exciting job opportunities.</p>
-          <button className="btn-primary">Get Started</button>
+          <button className="btn-primary">
+            <Link href="/auth" style={{ textDecoration: "none" }}>
+              Get Started
+            </Link>
+          </button>
         </div>
       </section>
 
