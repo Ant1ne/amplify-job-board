@@ -1,12 +1,12 @@
 import { Amplify } from "aws-amplify";
-import config from "../../src/amplifyconfiguration.json";
+import awsconfig from "../aws-exports";
 import styles from "../styles/Home.module.css";
 import { useEffect, useState } from "react";
-import NavBar from "@/components/NavBar/NavBar";
-import JobDetails from "@/components/JobDetails/JobDetails";
+import NavBar from "../components/NavBar/NavBar";
+import JobDetails from "../components/JobDetails/JobDetails";
 import getData from "./api/getData";
 
-Amplify.configure({ ...config, ssr: true });
+Amplify.configure({ ...awsconfig, ssr: true });
 
 function Home() {
   const [data, setData] = useState([]);

@@ -2,6 +2,10 @@ import React, { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import "@aws-amplify/ui-react/styles.css";
 import { Auth } from "aws-amplify";
+import { Amplify } from "aws-amplify";
+import awsconfig from "../../aws-exports";
+
+Amplify.configure({ ...awsconfig, ssr: true });
 
 const NavBar = () => {
   const [authenticated, setAuthenticated] = useState(false);

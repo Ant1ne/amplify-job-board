@@ -17,4 +17,4 @@ type ApplicantList @model @auth(rules: [{allow: public}]) {
   PortfolioLink: String
   Status: String
   JobID: String
-}
+} 

@@ -2,7 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import React, { useEffect } from "react";
 import { useRouter } from "next/router";
-import getData from "@/pages/api/getData";
+import getData from "../../pages/api/getData";
 
 function JobDetails({ data }) {
   const router = useRouter();

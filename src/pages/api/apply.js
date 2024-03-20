@@ -1,7 +1,7 @@
 import { DataStore } from "@aws-amplify/datastore";
 import { ApplicantList } from "../../models";
 
-export default async function apply(data, jobdetails) {
+export default async function apply(data, jobDetails) {
   try {
     await DataStore?.save(
       new ApplicantList({
@@ -10,7 +10,7 @@ export default async function apply(data, jobdetails) {
         Message: `${data.coverletter}`,
         PortfolioLink: `${data.portfoliourl}`,
         Status: ``,
-        JobID: `${jobdetails?.id}`,
+        JobID: `${jobDetails?.id}`,
       })
     );
     return { success: true };

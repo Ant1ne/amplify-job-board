@@ -6,11 +6,9 @@ import awsconfig from "../aws-exports";
 import { useRouter } from "next/navigation";
 import { Auth } from "aws-amplify";
 import styles from "../styles/Home.module.css";
-import Navbar from "@/components/Navbar/Navbar";
+import NavBar from "../components/NavBar/NavBar";
 import Swal from "sweetalert2";
 import apply from "./api/apply";
-import { ApplicantList } from "@/models";
-import { DataStore } from "@aws-amplify/datastore";
 
 Amplify.configure({ ...awsconfig, ssr: true });
 
@@ -52,29 +50,6 @@ function Applicant({ signOut, user }) {
     } else {
       console.log(res.error);
     }
-    // await DataStore?.save(
-    //     new ApplicantList({
-    //         Name: `${state?.name}`,
-    //         Email: `${state?.email}`,
-    //         Message: `${state?.coverletter}`,
-    //         PortfolioLink: `${state?.portfoliourl}`,
-    //         Status: ``,
-    //         JobID: `${jobdetails?.id}`,
-    //     })
-    // ).then(savedItem => {
-    //     // console.log('Item saved successfully:', savedItem);
-    //     Swal.fire({
-    //         title: "Application successfully",
-    //         showConfirmButton: true,
-    //         confirmButtonText: "Ok",
-    //     }).then((result) => {
-    //         if (result.isConfirmed) {
-    //             router.push("/");
-    //         }
-    //     });
-    // }).catch(error => {
-    //     console.error('Error saving item:', error);
-    // })
   };
 
   const HandleLogout = () => {
@@ -109,7 +84,7 @@ function Applicant({ signOut, user }) {
   return (
     <div>
       <div className={styles.home_container}>
-        <Navbar />
+        <NavBar />
 
         <div className="container">
           <button

@@ -2,17 +2,18 @@ import React, { useEffect, useState } from "react";
 import { Amplify } from "aws-amplify";
 import { withAuthenticator } from "@aws-amplify/ui-react";
 import "@aws-amplify/ui-react/styles.css";
+import awsconfig from "../aws-exports";
 import { useRouter } from "next/navigation";
 import { Auth } from "aws-amplify";
 import styles from "../styles/Home.module.css";
 import { DataStore } from "@aws-amplify/datastore";
 import Image from "next/image";
 import Swal from "sweetalert2";
-import Navbar from "@/components/NavBar/NavBar";
+import NavBar from "../components/NavBar/NavBar";
 import addNewJob from "./api/addNewJob";
-import { JobList } from "@/models";
 
-Amplify.configure({ ...process.env.awsconfig, ssr: true });
+Amplify.configure({ ...awsconfig, ssr: true });
+
 const APPLICANT_ROUTE = "/applicant";
 
 async function getData() {
@@ -135,7 +136,7 @@ function Admin({ signOut, user }) {
   return (
     <div>
       <div className={styles.home_container}>
-        <Navbar />
+        <NavBar />
         <div className="container">
           <button
             style={{
