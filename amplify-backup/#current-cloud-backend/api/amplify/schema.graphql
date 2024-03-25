@@ -1,0 +1,20 @@
+type JobList @model @auth(rules: [{allow: public}]) {
+  id: ID!
+  JobPosition: String
+  Category: String
+  Location: String
+  Experience: String
+  JobStatus: String
+  Company: String
+  Description: String
+}
+
+type ApplicantList @model @auth(rules: [{allow: public}]) {
+  id: ID!
+  Name: String
+  Email: AWSEmail
+  Message: String
+  PortfolioLink: String
+  Status: String
+  JobID: String
+} 
